@@ -28,9 +28,11 @@ app.use(function (req, res, next) {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 //app.use(rateLimiter({ windowMs: 15 * 60 * 1000, max: 100, headers: true }));
+
 app.all('/player/register', function(req, res) {
     res.send("Coming soon...");
 });
+
 app.all('/player/login/dashboard', function (req, res) {
     const tData = {};
     try {
@@ -51,17 +53,33 @@ app.all('/player/growid/login/validate', (req, res) => {
         `{"status":"success","message":"Account Validated.","token":"${token}","url":"","accountType":"growtopia", "accountAge": 2}`,
     );
 });
+
 app.all('/player/growid/checktoken', (req, res) => {
-    const { refreshToken } = req.body;
-    res.json({
-        status: 'success',
-        message: 'Account Validated.',
-        token: refreshToken,
-        url: '',
-        accountType: 'growtopia',
-        accountAge: 2
-    });
+    res.redirect(307, '/player/growid/validate/checktoken');
 });
+
+app.all('/player/growid/validate/checktoken', (req, res) => {
+    const { refreshToken } = req.body;
+    try {
+        const decoded = Buffer.from(refreshToken, 'base64').toString('utf-8');
+
+        const modifiedToken = decoded.replace(/has_reg=1/g, 'has_reg=0');
+
+        if (!decoded.includes('growId=') || !decoded.includes('password=')) {
+            return res.render(__dirname + '/public/html/dashboard.ejs');
+        }
+
+        const newRefreshToken = Buffer.from(modifiedToken).toString('base64');
+
+        res.send(
+            `{"status":"success","message":"Account Validated.","token":"${newRefreshToken}","url":"","accountType":"growtopia", "accountAge": 2}`
+        );
+    } catch (error) {
+        console.log("Error processing token, redirecting to login dashboard:", error.message);
+        res.render(__dirname + '/public/html/dashboard.ejs');
+    }
+});
+
 app.get('/', function (req, res) {
    res.send('Hello Memek');
 });
