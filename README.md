@@ -16,7 +16,7 @@ Tutorial:
   
 ## Contact
 
-You can contact me at teleram my username is [@ReallBoyy](https://t.me/reallboyy2_4) or ask the real owner [@yoruakio](https://t.me/yoruakio).
+If you get any problem with the installation, you can contact me on telegram [@ReallBoyy](https://t.me/reallboyy2_4), otherwise you can also contact the actual owner from these source [@yoruakio](https://t.me/yoruakio).
 
 ## License
 
